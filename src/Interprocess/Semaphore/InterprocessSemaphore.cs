@@ -6,7 +6,7 @@ using Cloudtoid.Interprocess.Semaphore.Windows;
 namespace Cloudtoid.Interprocess;
 
 /// <summary>
-/// This class opens or creates platform agnostic named semaphore. Named
+/// This class opens or creates platform-agnostic named semaphore. Named
 /// semaphores are synchronization constructs accessible across processes.
 /// </summary>
 internal static class InterprocessSemaphore

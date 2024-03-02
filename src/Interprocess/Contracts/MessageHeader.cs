@@ -19,7 +19,7 @@ internal struct MessageHeader
 
     internal MessageHeader(int state, int bodyLength)
     {
-            State = state;
-            BodyLength = bodyLength;
-        }
+        State = state;
+        BodyLength = bodyLength;
+    }
 }

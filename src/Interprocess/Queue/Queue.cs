@@ -58,7 +58,10 @@ internal abstract class Queue : IDisposable
         {
             Dispose(false);
         }
-        catch { }
+        catch
+        {
+            // ignored
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
