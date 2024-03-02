@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# SA1514: Element documentation header should be preceded by blank line
+dotnet_diagnostic.SA1514.severity = none
