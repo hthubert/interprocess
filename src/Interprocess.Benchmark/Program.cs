@@ -1,12 +1,11 @@
 ﻿using BenchmarkDotNet.Running;
 
-namespace Cloudtoid.Interprocess.Benchmark
+namespace Cloudtoid.Interprocess.Benchmark;
+
+public sealed class Program
 {
-    public sealed class Program
+    public static void Main()
     {
-        public static void Main()
-        {
-            _ = BenchmarkRunner.Run(typeof(Program).Assembly);
-        }
+        _ = BenchmarkRunner.Run(typeof(Program).Assembly);
     }
 }

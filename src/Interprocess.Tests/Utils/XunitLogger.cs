@@ -3,29 +3,29 @@ using System.IO;
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
-namespace Cloudtoid.Interprocess.Tests
-{
-    public class XunitLogger : ILogger
-    {
-        private readonly ITestOutputHelper testOutputHelper;
-        private readonly string categoryName;
-        private readonly string? fileName;
+namespace Cloudtoid.Interprocess.Tests;
 
-        public XunitLogger(ITestOutputHelper testOutputHelper, string categoryName, string? fileName)
-        {
+public class XunitLogger : ILogger
+{
+    private readonly ITestOutputHelper testOutputHelper;
+    private readonly string categoryName;
+    private readonly string? fileName;
+
+    public XunitLogger(ITestOutputHelper testOutputHelper, string categoryName, string? fileName)
+    {
             this.testOutputHelper = testOutputHelper;
             this.categoryName = categoryName;
             this.fileName = fileName;
         }
 
-        public IDisposable BeginScope<TState>(TState state)
-            => NoopDisposable.Instance;
+    public IDisposable BeginScope<TState>(TState state)
+        => NoopDisposable.Instance;
 
-        public bool IsEnabled(LogLevel logLevel)
-            => true;
+    public bool IsEnabled(LogLevel logLevel)
+        => true;
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
-        {
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+    {
             var message = $"{categoryName} [{eventId}] {formatter(state, exception)}";
             testOutputHelper.WriteLine(message);
             if (exception != null)
@@ -34,8 +34,8 @@ namespace Cloudtoid.Interprocess.Tests
             LogToFile(message, exception);
         }
 
-        private void LogToFile(string message, Exception? exception)
-        {
+    private void LogToFile(string message, Exception? exception)
+    {
             if (fileName is null)
                 return;
 
@@ -53,10 +53,9 @@ namespace Cloudtoid.Interprocess.Tests
             }
         }
 
-        private sealed class NoopDisposable : IDisposable
-        {
-            public static readonly NoopDisposable Instance = new();
-            public void Dispose() { }
-        }
+    private sealed class NoopDisposable : IDisposable
+    {
+        public static readonly NoopDisposable Instance = new();
+        public void Dispose() { }
     }
 }

@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace Cloudtoid.Interprocess
+namespace Cloudtoid.Interprocess;
+
+public interface IPublisher : IDisposable
 {
-    public interface IPublisher : IDisposable
-    {
-        bool TryEnqueue(ReadOnlySpan<byte> message);
-    }
+    bool TryEnqueue(ReadOnlySpan<byte> message);
 }

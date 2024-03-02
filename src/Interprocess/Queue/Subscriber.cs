@@ -2,23 +2,23 @@
 using System.Threading;
 using Microsoft.Extensions.Logging;
 
-namespace Cloudtoid.Interprocess
-{
-    internal sealed class Subscriber : Queue, ISubscriber
-    {
-        private static readonly long TicksForTenSeconds = TimeSpan.FromSeconds(10).Ticks;
-        private readonly CancellationTokenSource cancellationSource = new();
-        private readonly CountdownEvent countdownEvent = new(1);
-        private readonly IInterprocessSemaphoreWaiter signal;
+namespace Cloudtoid.Interprocess;
 
-        internal Subscriber(QueueOptions options, ILoggerFactory loggerFactory)
-            : base(options, loggerFactory)
-        {
+internal sealed class Subscriber : Queue, ISubscriber
+{
+    private static readonly long TicksForTenSeconds = TimeSpan.FromSeconds(10).Ticks;
+    private readonly CancellationTokenSource cancellationSource = new();
+    private readonly CountdownEvent countdownEvent = new(1);
+    private readonly IInterprocessSemaphoreWaiter signal;
+
+    internal Subscriber(QueueOptions options, ILoggerFactory loggerFactory)
+        : base(options, loggerFactory)
+    {
             signal = InterprocessSemaphore.CreateWaiter(options.QueueName);
         }
 
-        protected override void Dispose(bool disposing)
-        {
+    protected override void Dispose(bool disposing)
+    {
             // drain the Dequeue/TryDequeue requests
             cancellationSource.Cancel();
             countdownEvent.Signal();
@@ -38,20 +38,20 @@ namespace Cloudtoid.Interprocess
             base.Dispose(disposing);
         }
 
-        public bool TryDequeue(CancellationToken cancellation, out ReadOnlyMemory<byte> message)
-            => TryDequeueCore(default, cancellation, out message);
+    public bool TryDequeue(CancellationToken cancellation, out ReadOnlyMemory<byte> message)
+        => TryDequeueCore(default, cancellation, out message);
 
-        public bool TryDequeue(Memory<byte> resultBuffer, CancellationToken cancellation, out ReadOnlyMemory<byte> message)
-            => TryDequeueCore(resultBuffer, cancellation, out message);
+    public bool TryDequeue(Memory<byte> resultBuffer, CancellationToken cancellation, out ReadOnlyMemory<byte> message)
+        => TryDequeueCore(resultBuffer, cancellation, out message);
 
-        public ReadOnlyMemory<byte> Dequeue(CancellationToken cancellation)
-            => DequeueCore(default, cancellation);
+    public ReadOnlyMemory<byte> Dequeue(CancellationToken cancellation)
+        => DequeueCore(default, cancellation);
 
-        public ReadOnlyMemory<byte> Dequeue(Memory<byte> resultBuffer, CancellationToken cancellation)
-            => DequeueCore(resultBuffer, cancellation);
+    public ReadOnlyMemory<byte> Dequeue(Memory<byte> resultBuffer, CancellationToken cancellation)
+        => DequeueCore(resultBuffer, cancellation);
 
-        private bool TryDequeueCore(Memory<byte>? resultBuffer, CancellationToken cancellation, out ReadOnlyMemory<byte> message)
-        {
+    private bool TryDequeueCore(Memory<byte>? resultBuffer, CancellationToken cancellation, out ReadOnlyMemory<byte> message)
+    {
             // do NOT reorder the cancellation and the AddCount operation below. See Dispose for more information.
             cancellationSource.ThrowIfCancellationRequested(cancellation);
             countdownEvent.AddCount();
@@ -66,8 +66,8 @@ namespace Cloudtoid.Interprocess
             }
         }
 
-        private ReadOnlyMemory<byte> DequeueCore(Memory<byte>? resultBuffer, CancellationToken cancellation)
-        {
+    private ReadOnlyMemory<byte> DequeueCore(Memory<byte>? resultBuffer, CancellationToken cancellation)
+    {
             // do NOT reorder the cancellation and the AddCount operation below. See Dispose for more information.
             cancellationSource.ThrowIfCancellationRequested(cancellation);
             countdownEvent.AddCount();
@@ -94,11 +94,11 @@ namespace Cloudtoid.Interprocess
             }
         }
 
-        private unsafe bool TryDequeueImpl(
-            Memory<byte>? resultBuffer,
-            CancellationToken cancellation,
-            out ReadOnlyMemory<byte> message)
-        {
+    private unsafe bool TryDequeueImpl(
+        Memory<byte>? resultBuffer,
+        CancellationToken cancellation,
+        out ReadOnlyMemory<byte> message)
+    {
             cancellationSource.ThrowIfCancellationRequested(cancellation);
 
             message = ReadOnlyMemory<byte>.Empty;
@@ -161,5 +161,4 @@ namespace Cloudtoid.Interprocess
 
             return true;
         }
-    }
 }

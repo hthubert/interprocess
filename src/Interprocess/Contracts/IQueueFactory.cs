@@ -1,8 +1,7 @@
-﻿namespace Cloudtoid.Interprocess
+﻿namespace Cloudtoid.Interprocess;
+
+public interface IQueueFactory
 {
-    public interface IQueueFactory
-    {
-        IPublisher CreatePublisher(QueueOptions options);
-        ISubscriber CreateSubscriber(QueueOptions options);
-    }
+    IPublisher CreatePublisher(QueueOptions options);
+    ISubscriber CreateSubscriber(QueueOptions options);
 }

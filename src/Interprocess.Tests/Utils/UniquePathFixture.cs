@@ -1,14 +1,14 @@
 ﻿using System;
 using System.IO;
 
-namespace Cloudtoid.Interprocess.Tests
-{
-    public class UniquePathFixture : IDisposable
-    {
-        private static readonly string Root = System.IO.Path.GetTempPath();
+namespace Cloudtoid.Interprocess.Tests;
 
-        public UniquePathFixture()
-        {
+public class UniquePathFixture : IDisposable
+{
+    private static readonly string Root = System.IO.Path.GetTempPath();
+
+    public UniquePathFixture()
+    {
             while (true)
             {
                 var folder = (DateTime.UtcNow.Ticks % 0xFFFFF).ToStringInvariant("X5");
@@ -21,10 +21,10 @@ namespace Cloudtoid.Interprocess.Tests
             }
         }
 
-        internal string Path { get; }
+    internal string Path { get; }
 
-        public void Dispose()
-        {
+    public void Dispose()
+    {
             foreach (var file in Directory.EnumerateFiles(Path))
                 PathUtil.TryDeleteFile(file);
 
@@ -34,5 +34,4 @@ namespace Cloudtoid.Interprocess.Tests
             }
             catch { }
         }
-    }
 }

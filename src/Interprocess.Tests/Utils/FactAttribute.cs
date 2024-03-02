@@ -1,20 +1,20 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace Cloudtoid.Interprocess.Tests
+namespace Cloudtoid.Interprocess.Tests;
+
+public class FactAttribute : Xunit.FactAttribute
 {
-    public class FactAttribute : Xunit.FactAttribute
+    private static readonly Platform? CurrentPlatform = GetPlatform();
+
+    /// <summary>
+    /// Gets or sets the supported OS Platforms
+    /// </summary>
+    public Platform Platforms { get; set; } = Platform.All;
+
+    public override string? Skip
     {
-        private static readonly Platform? CurrentPlatform = GetPlatform();
-
-        /// <summary>
-        /// Gets or sets the supported OS Platforms
-        /// </summary>
-        public Platform Platforms { get; set; } = Platform.All;
-
-        public override string? Skip
+        get
         {
-            get
-            {
                 if (base.Skip != null || CurrentPlatform is null)
                     return base.Skip;
 
@@ -23,11 +23,11 @@ namespace Cloudtoid.Interprocess.Tests
 
                 return null;
             }
-            set => base.Skip = value;
-        }
+        set => base.Skip = value;
+    }
 
-        private static Platform? GetPlatform()
-        {
+    private static Platform? GetPlatform()
+    {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 return Platform.Windows;
 
@@ -42,5 +42,4 @@ namespace Cloudtoid.Interprocess.Tests
 
             return null;
         }
-    }
 }

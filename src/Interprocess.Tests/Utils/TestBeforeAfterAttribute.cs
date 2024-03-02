@@ -2,18 +2,17 @@
 using System.Reflection;
 using Xunit.Sdk;
 
-namespace Cloudtoid.Interprocess.Tests
+namespace Cloudtoid.Interprocess.Tests;
+
+public class TestBeforeAfterAttribute : BeforeAfterTestAttribute
 {
-    public class TestBeforeAfterAttribute : BeforeAfterTestAttribute
+    public override void Before(MethodInfo methodUnderTest)
     {
-        public override void Before(MethodInfo methodUnderTest)
-        {
             Console.WriteLine("Before - " + methodUnderTest.Name);
         }
 
-        public override void After(MethodInfo methodUnderTest)
-        {
+    public override void After(MethodInfo methodUnderTest)
+    {
             Console.WriteLine("After - " + methodUnderTest.Name);
         }
-    }
 }
