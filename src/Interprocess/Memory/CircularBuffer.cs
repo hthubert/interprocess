@@ -40,19 +40,19 @@ internal sealed unsafe class CircularBuffer
         AdjustedOffset(ref offset);
         using (var pinnedResultBuffer = result.Pin())
         {
-            var resultBuffeerPtr = (byte*)pinnedResultBuffer.Pointer;
+            var resultBufferPtr = (byte*)pinnedResultBuffer.Pointer;
             var sourcePtr = buffer + offset;
 
             var rightLength = Math.Min(Capacity - offset, length);
             if (rightLength > 0)
-                Buffer.MemoryCopy(sourcePtr, resultBuffeerPtr, rightLength, rightLength);
+                Buffer.MemoryCopy(sourcePtr, resultBufferPtr, rightLength, rightLength);
 
             var leftLength = length - rightLength;
             if (leftLength > 0)
-                Buffer.MemoryCopy(buffer, resultBuffeerPtr + rightLength, leftLength, leftLength);
+                Buffer.MemoryCopy(buffer, resultBufferPtr + rightLength, leftLength, leftLength);
         }
 
-        return result.Slice(0, (int)length);
+        return result[..(int)length];
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

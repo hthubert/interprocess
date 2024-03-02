@@ -13,23 +13,23 @@ internal static class InterprocessSemaphore
 {
     internal static IInterprocessSemaphoreWaiter CreateWaiter(string name)
     {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                return new SemaphoreWindows(name);
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            return new SemaphoreWindows(name);
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                return new SemaphoreMacOS(name);
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            return new SemaphoreMacOS(name);
 
-            return new SemaphoreLinux(name);
-        }
+        return new SemaphoreLinux(name);
+    }
 
     internal static IInterprocessSemaphoreReleaser CreateReleaser(string name)
     {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                return new SemaphoreWindows(name);
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            return new SemaphoreWindows(name);
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                return new SemaphoreMacOS(name);
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            return new SemaphoreMacOS(name);
 
-            return new SemaphoreLinux(name);
-        }
+        return new SemaphoreLinux(name);
+    }
 }

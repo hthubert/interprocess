@@ -11,13 +11,13 @@ public sealed class QueueFactory : IQueueFactory
     public QueueFactory()
         : this(NullLoggerFactory.Instance)
     {
-        }
+    }
 
     public QueueFactory(ILoggerFactory loggerFactory)
     {
-            Util.Ensure64Bit();
-            this.loggerFactory = CheckValue(loggerFactory, nameof(loggerFactory));
-        }
+        Util.Ensure64Bit();
+        this.loggerFactory = CheckValue(loggerFactory, nameof(loggerFactory));
+    }
 
     /// <summary>
     /// Creates a queue message publisher.

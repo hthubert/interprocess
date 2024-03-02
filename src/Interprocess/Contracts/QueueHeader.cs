@@ -18,7 +18,7 @@ internal struct QueueHeader
     internal long WriteOffset;
 
     /// <summary>
-    /// Time (tiks) at which the read lock was taken. It is set to zero if not lock
+    /// Time (ticks) at which the read lock was taken. It is set to zero if not lock
     /// </summary>
     [FieldOffset(16)]
     internal long ReadLockTimestamp;

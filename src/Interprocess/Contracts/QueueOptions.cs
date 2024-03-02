@@ -13,7 +13,7 @@ public sealed class QueueOptions
     public QueueOptions(string queueName, long capacity)
         : this(queueName, SysPath.GetTempPath(), capacity)
     {
-        }
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="QueueOptions"/> class.
@@ -23,12 +23,12 @@ public sealed class QueueOptions
     /// <param name="capacity">The maximum capacity of the queue in bytes. This should be at least 16 bytes long and in the multiples of 8</param>
     public unsafe QueueOptions(string queueName, string path, long capacity)
     {
-            QueueName = CheckNonEmpty(queueName, nameof(queueName));
-            Path = CheckValue(path, nameof(path));
+        QueueName = CheckNonEmpty(queueName, nameof(queueName));
+        Path = CheckValue(path, nameof(path));
 
-            Capacity = CheckGreaterThan(capacity, 16, nameof(capacity));
-            CheckParam((capacity % 8) == 0, nameof(queueName), "messageCapacityInBytes should be a multiple of 8 (8 bytes = 64 bits).");
-        }
+        Capacity = CheckGreaterThan(capacity, 16, nameof(capacity));
+        CheckParam((capacity % 8) == 0, nameof(queueName), "messageCapacityInBytes should be a multiple of 8 (8 bytes = 64 bits).");
+    }
 
     /// <summary>
     /// Gets the unique name of the queue.

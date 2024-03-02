@@ -50,110 +50,110 @@ internal static class Interop
 
     internal static IntPtr CreateOrOpenSemaphore(string name, uint initialCount)
     {
-            var handle = sem_open(name, OCREAT, (uint)PosixFilePermissions.ACCESSPERMS, initialCount);
-            if (handle != SemFailed)
-                return handle;
+        var handle = sem_open(name, OCREAT, (uint)PosixFilePermissions.ACCESSPERMS, initialCount);
+        if (handle != SemFailed)
+            return handle;
 
-            throw Error switch
-            {
-                EINVAL => new ArgumentException($"The initial count cannot be greater than {SEMVALUEMAX}.", nameof(initialCount)),
-                ENAMETOOLONG => new ArgumentException($"The specified semaphore name is too long.", nameof(name)),
-                EACCES => new PosixSempahoreUnauthorizedAccessException(),
-                EEXIST => new PosixSempahoreExistsException(),
-                EINTR => new OperationCanceledException(),
-                ENFILE => new PosixSempahoreException("Too many semaphores or file descriptors are open on the system."),
-                EMFILE => new PosixSempahoreException("Too many semaphores or file descriptors are open by this process."),
-                ENOMEM => new InsufficientMemoryException(),
-                _ => new PosixSempahoreException(Error),
-            };
-        }
+        throw Error switch
+        {
+            EINVAL => new ArgumentException($"The initial count cannot be greater than {SEMVALUEMAX}.", nameof(initialCount)),
+            ENAMETOOLONG => new ArgumentException($"The specified semaphore name is too long.", nameof(name)),
+            EACCES => new PosixSempahoreUnauthorizedAccessException(),
+            EEXIST => new PosixSempahoreExistsException(),
+            EINTR => new OperationCanceledException(),
+            ENFILE => new PosixSempahoreException("Too many semaphores or file descriptors are open on the system."),
+            EMFILE => new PosixSempahoreException("Too many semaphores or file descriptors are open by this process."),
+            ENOMEM => new InsufficientMemoryException(),
+            _ => new PosixSempahoreException(Error),
+        };
+    }
 
     internal static void Release(IntPtr handle)
     {
-            if (sem_post(handle) == 0)
-                return;
+        if (sem_post(handle) == 0)
+            return;
 
-            throw Error switch
-            {
-                EINVAL => new InvalidPosixSempahoreException(),
-                EOVERFLOW => new SemaphoreFullException(),
-                _ => new PosixSempahoreException(Error),
-            };
-        }
+        throw Error switch
+        {
+            EINVAL => new InvalidPosixSempahoreException(),
+            EOVERFLOW => new SemaphoreFullException(),
+            _ => new PosixSempahoreException(Error),
+        };
+    }
 
     internal static bool Wait(IntPtr handle, int millisecondsTimeout)
     {
-            if (millisecondsTimeout == Timeout.Infinite)
-            {
-                Wait(handle);
-            }
-            else
-            {
-                var start = DateTime.Now;
-                while (!TryWait(handle))
-                {
-                    if ((DateTime.Now - start).Milliseconds > millisecondsTimeout)
-                        return false;
-
-                    Thread.Yield();
-                }
-            }
-
-            return true;
+        if (millisecondsTimeout == Timeout.Infinite)
+        {
+            Wait(handle);
         }
+        else
+        {
+            var start = DateTime.Now;
+            while (!TryWait(handle))
+            {
+                if ((DateTime.Now - start).Milliseconds > millisecondsTimeout)
+                    return false;
+
+                Thread.Yield();
+            }
+        }
+
+        return true;
+    }
 
     private static void Wait(IntPtr handle)
     {
-            if (sem_wait(handle) == 0)
-                return;
+        if (sem_wait(handle) == 0)
+            return;
 
-            throw Error switch
-            {
-                EINVAL => new InvalidPosixSempahoreException(),
-                EDEADLK => new PosixSempahoreException($"A deadlock was detected attempting to wait on a semaphore."),
-                EINTR => new OperationCanceledException(),
-                _ => new PosixSempahoreException(Error),
-            };
-        }
+        throw Error switch
+        {
+            EINVAL => new InvalidPosixSempahoreException(),
+            EDEADLK => new PosixSempahoreException($"A deadlock was detected attempting to wait on a semaphore."),
+            EINTR => new OperationCanceledException(),
+            _ => new PosixSempahoreException(Error),
+        };
+    }
 
     private static bool TryWait(IntPtr handle)
     {
-            if (sem_trywait(handle) == 0)
-                return true;
+        if (sem_trywait(handle) == 0)
+            return true;
 
-            return Error switch
-            {
-                EAGAIN => false,
-                EINVAL => throw new InvalidPosixSempahoreException(),
-                EDEADLK => throw new PosixSempahoreException($"A deadlock was detected attempting to wait on a semaphore."),
-                EINTR => throw new OperationCanceledException(),
-                _ => throw new PosixSempahoreException(Error),
-            };
-        }
+        return Error switch
+        {
+            EAGAIN => false,
+            EINVAL => throw new InvalidPosixSempahoreException(),
+            EDEADLK => throw new PosixSempahoreException($"A deadlock was detected attempting to wait on a semaphore."),
+            EINTR => throw new OperationCanceledException(),
+            _ => throw new PosixSempahoreException(Error),
+        };
+    }
 
     internal static void Close(IntPtr handle)
     {
-            if (sem_close(handle) == 0)
-                return;
+        if (sem_close(handle) == 0)
+            return;
 
-            throw Error switch
-            {
-                EINVAL => new InvalidPosixSempahoreException(),
-                _ => new PosixSempahoreException(Error),
-            };
-        }
+        throw Error switch
+        {
+            EINVAL => new InvalidPosixSempahoreException(),
+            _ => new PosixSempahoreException(Error),
+        };
+    }
 
     internal static void Unlink(string name)
     {
-            if (sem_unlink(name) == 0)
-                return;
+        if (sem_unlink(name) == 0)
+            return;
 
-            throw Error switch
-            {
-                ENAMETOOLONG => new ArgumentException($"The specified semaphore name is too long.", nameof(name)),
-                EACCES => new PosixSempahoreUnauthorizedAccessException(),
-                ENOENT => new PosixSempahoreNotExistsException(),
-                _ => new PosixSempahoreException(Error),
-            };
-        }
+        throw Error switch
+        {
+            ENAMETOOLONG => new ArgumentException($"The specified semaphore name is too long.", nameof(name)),
+            EACCES => new PosixSempahoreUnauthorizedAccessException(),
+            ENOENT => new PosixSempahoreNotExistsException(),
+            _ => new PosixSempahoreException(Error),
+        };
+    }
 }

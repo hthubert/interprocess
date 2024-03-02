@@ -11,27 +11,27 @@ internal class SemaphoreMacOS : IInterprocessSemaphoreWaiter, IInterprocessSemap
 
     internal SemaphoreMacOS(string name, bool deleteOnDispose = false)
     {
-            this.name = name = HandleNamePrefix + name;
-            this.deleteOnDispose = deleteOnDispose;
-            handle = Interop.CreateOrOpenSemaphore(name, 0);
-        }
+        this.name = name = HandleNamePrefix + name;
+        this.deleteOnDispose = deleteOnDispose;
+        handle = Interop.CreateOrOpenSemaphore(name, 0);
+    }
 
     ~SemaphoreMacOS()
         => Dispose(false);
 
     public void Dispose()
     {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 
     protected virtual void Dispose(bool disposing)
     {
-            Interop.Close(handle);
+        Interop.Close(handle);
 
-            if (deleteOnDispose)
-                Interop.Unlink(name);
-        }
+        if (deleteOnDispose)
+            Interop.Unlink(name);
+    }
 
     public void Release()
         => Interop.Release(handle);

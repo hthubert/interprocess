@@ -14,10 +14,10 @@ internal struct PosixTimespec
 
     public static implicit operator PosixTimespec(DateTimeOffset dateTime)
     {
-            return new PosixTimespec
-            {
-                tv_sec = dateTime.ToUnixTimeSeconds(),
-                tv_nsec = 1000_000 * (dateTime.ToUnixTimeMilliseconds() % 1000)
-            };
-        }
+        return new PosixTimespec
+        {
+            tv_sec = dateTime.ToUnixTimeSeconds(),
+            tv_nsec = 1000_000 * (dateTime.ToUnixTimeMilliseconds() % 1000)
+        };
+    }
 }

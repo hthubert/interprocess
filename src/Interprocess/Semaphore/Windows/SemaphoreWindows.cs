@@ -10,8 +10,8 @@ internal sealed class SemaphoreWindows : IInterprocessSemaphoreWaiter, IInterpro
 
     internal SemaphoreWindows(string name)
     {
-            handle = new SysSemaphore(0, int.MaxValue, HandleNamePrefix + name);
-        }
+        handle = new SysSemaphore(0, int.MaxValue, HandleNamePrefix + name);
+    }
 
     public void Dispose()
         => handle.Dispose();

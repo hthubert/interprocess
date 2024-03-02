@@ -10,23 +10,23 @@ internal abstract class Queue : IDisposable
 
     protected unsafe Queue(QueueOptions options, ILoggerFactory loggerFactory)
     {
-            Logger = loggerFactory.CreateLogger<Queue>();
-            view = new MemoryView(options, loggerFactory);
-            try
-            {
-                Buffer = new CircularBuffer(sizeof(QueueHeader) + view.Pointer, options.Capacity);
-            }
-            catch
-            {
-                view.Dispose();
-                throw;
-            }
-
-            // must clean up if the application is being closed but finalizer is not called.
-            // this happens in cases such as closing a console app by pressing the X button.
-            AppDomain.CurrentDomain.ProcessExit += OnAppExit;
-            Console.CancelKeyPress += OnAppExit;
+        Logger = loggerFactory.CreateLogger<Queue>();
+        view = new MemoryView(options, loggerFactory);
+        try
+        {
+            Buffer = new CircularBuffer(sizeof(QueueHeader) + view.Pointer, options.Capacity);
         }
+        catch
+        {
+            view.Dispose();
+            throw;
+        }
+
+        // must clean up if the application is being closed but finalizer is not called.
+        // this happens in cases such as closing a console app by pressing the X button.
+        AppDomain.CurrentDomain.ProcessExit += OnAppExit;
+        Console.CancelKeyPress += OnAppExit;
+    }
 
     ~Queue()
         => Dispose(false);
@@ -42,24 +42,24 @@ internal abstract class Queue : IDisposable
 
     public void Dispose()
     {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 
     protected virtual void Dispose(bool disposing)
     {
-            if (disposing)
-                view.Dispose();
-        }
+        if (disposing)
+            view.Dispose();
+    }
 
     private void OnAppExit(object? sender, EventArgs e)
     {
-            try
-            {
-                Dispose(false);
-            }
-            catch { }
+        try
+        {
+            Dispose(false);
         }
+        catch { }
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected static unsafe long GetMessageBodyOffset(long startOffset)
@@ -76,11 +76,11 @@ internal abstract class Queue : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected static unsafe long GetPaddedMessageLength(long bodyLength)
     {
-            var length = sizeof(MessageHeader) + bodyLength;
+        var length = sizeof(MessageHeader) + bodyLength;
 
-            // Round up to the closest integer divisible by 8. This will add the [padding] if one is needed.
-            return 8 * (long)Math.Ceiling(length / 8.0);
-        }
+        // Round up to the closest integer divisible by 8. This will add the [padding] if one is needed.
+        return 8 * (long)Math.Ceiling(length / 8.0);
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected long SafeIncrementMessageOffset(long offset, long increment)
